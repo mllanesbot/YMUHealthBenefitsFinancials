@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YMU · Health Insurance Budget Model</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0D1240;--bg:#EFF1FA;--surface:#fff;
+  --border:rgba(61,92,255,.1);--border2:rgba(61,92,255,.22);--border3:#DDE0F5;
+  --text:#0F1433;--text2:#4A5070;--text3:#8E95B8;
+  --blue:#3D5CFF;--blue-lt:#EEF1FF;--blue-dk:#2340CC;
+  --green:#0A6E30;--green-lt:#DCF5E6;--green-dk:#064520;
+  --red:#C42B2B;--red-lt:#FFE8E8;
+  --amber:#9A5500;--amber-lt:#FFF3DC;
+  --gold:#7A6000;--gold-lt:#FFFADC;
+  --row-h:#FAFBFF;
+  --head-bg:#F3F4FB;
+  --freeze-bg:#F8F9FE;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);font-size:12px;line-height:1.4;}
+
+/* STICKY HEADER */
+.app-header{position:sticky;top:0;z-index:200;background:var(--ink);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid rgba(255,255,255,.06);}
+.ah-title{font-size:15px;font-weight:700;color:#fff;letter-spacing:-.02em;}
+.ah-sub{font-size:10.5px;color:rgba(255,255,255,.4);margin-top:2px;}
+.ah-right{display:flex;align-items:center;gap:10px;}
+.ah-badge{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:4px 12px;border:1px solid rgba(255,255,255,.15);border-radius:99px;color:rgba(255,255,255,.5);}
+
+/* TABS */
+.tab-strip{position:sticky;top:57px;z-index:199;background:var(--ink);padding:0 20px;display:flex;border-bottom:1px solid rgba(255,255,255,.08);}
+.tab-btn{font-family:'Sora',sans-serif;font-size:11px;font-weight:500;letter-spacing:.04em;text-transform:uppercase;color:rgba(255,255,255,.4);padding:11px 16px;border:none;background:transparent;cursor:pointer;border-bottom:2px solid transparent;transition:color .15s,border-color .15s;white-space:nowrap;}
+.tab-btn:hover{color:rgba(255,255,255,.7);}
+.tab-btn.active{color:#fff;border-bottom-color:var(--blue);}
+
+/* CONTENT AREA */
+.content{padding:16px 18px 60px;}
+.sheet{display:none;}
+.sheet.active{display:block;}
+
+/* SHEET TITLE */
+.sheet-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px;letter-spacing:-.01em;}
+.sheet-sub{font-size:11px;color:var(--text3);margin-bottom:14px;}
+
+/* SPREADSHEET TABLE */
+.ss-wrap{overflow-x:visible;border-radius:8px;border:1px solid var(--border3);box-shadow:0 1px 8px rgba(0,0,0,.05);margin-bottom:16px;}
+.ss{width:100%;border-collapse:separate;border-spacing:0;font-size:11.5px;}
+
+/* HEADER ROW */
+.ss thead tr th{
+  background:var(--head-bg);
+  padding:9px 11px;
+  font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--text2);border-bottom:1.5px solid var(--border3);
+  white-space:nowrap;text-align:left;
+  position:sticky;top:100px;z-index:50;box-shadow:0 1px 0 var(--border3);
+}
+/* GROUP HEADER ROW */
+.ss tr.group-head td{
+  background:#0D1240 !important;color:rgba(255,255,255,.9) !important;border-top:8px solid var(--bg) !important;
+  font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  padding:8px 14px;
+}
+
+/* DATA ROWS */
+.ss tbody tr td{
+  padding:8px 11px;border-bottom:1px solid var(--border);border-top:none;
+  color:var(--text);white-space:nowrap;
+}
+.ss tbody tr:nth-child(even) td{background:var(--row-h);}
+.ss tbody tr.total-row td{
+  background:var(--blue-lt);font-weight:700;color:var(--blue-dk);
+  border-top:2px solid var(--blue);font-size:12px;
+}
+.ss tbody tr.total-row.green td{background:var(--green-lt);color:var(--green-dk);border-top-color:var(--green);}
+.ss tbody tr.sub-total td{background:#DDE3FF;font-weight:700;color:var(--blue-dk);border-top:2px solid var(--border2);font-size:12px;}
+.ss td.right,.ss th.right{text-align:right;}
+.ss td.center{text-align:center;}
+.ss td.mono{font-family:'JetBrains Mono',monospace;font-size:11px;}
+.ss td.right.mono{font-family:'JetBrains Mono',monospace;font-size:11px;text-align:right;}
+.ss td.green{color:var(--green);font-weight:600;}
+.ss td.red{color:var(--red);font-weight:600;}
+.ss td.amber{color:var(--amber);font-weight:600;}
+.ss td.dim{color:var(--text2);}
+.ss td.label-cell{font-weight:600;min-width:200px;}
+.ss td.freeze{background:var(--freeze-bg)!important;font-weight:600;min-width:180px;}
+
+/* EDITABLE INPUT */
+.ss-input{
+  font-family:'JetBrains Mono',monospace;font-size:11px;
+  border:1px solid var(--border2);border-radius:4px;
+  padding:3px 7px;width:90px;text-align:right;
+  background:#FEFEFF;color:var(--text);
+  outline:none;transition:border-color .1s,box-shadow .1s;
+}
+.ss-input:focus{border-color:var(--blue);box-shadow:0 0 0 2px rgba(61,92,255,.15);}
+
+/* CHANGE CELL */
+.change-pos{color:var(--red);font-weight:600;}
+.change-neg{color:var(--green);font-weight:600;}
+.change-zero{color:var(--text3);}
+
+/* BADGE */
+.pill{font-size:9.5px;font-weight:600;padding:2px 7px;border-radius:99px;display:inline-block;}
+.pill-current{background:var(--amber-lt);color:var(--amber);}
+.pill-proposed{background:var(--blue-lt);color:var(--blue-dk);}
+.pill-under{background:var(--green-lt);color:var(--green-dk);}
+.pill-over{background:var(--red-lt);color:var(--red);}
+
+
+/* Budget table separators */
+.ss-budget th.yr-sep, .ss-budget td.yr-sep{border-right:3px solid #1DB954 !important;}
+.ss-budget th.chg-sep, .ss-budget td.chg-sep{border-right:3px solid var(--border2) !important;}
+.ss-budget tr.group-head td{border-right:none !important;}
+/* NOTICE */
+.notice{border-radius:8px;padding:10px 14px;margin-bottom:12px;border:1px solid;font-size:11px;color:var(--text2);line-height:1.5;}
+.notice.info{background:var(--blue-lt);border-color:rgba(61,92,255,.25);}
+.notice.warn{background:var(--amber-lt);border-color:rgba(154,85,0,.25);}
+.notice.good{background:var(--green-lt);border-color:rgba(10,110,48,.25);}
+.notice strong{color:var(--text);}
+
+/* SCENARIO CONTROLS */
+.controls{background:var(--surface);border:1px solid var(--border3);border-radius:8px;padding:14px 16px;margin-bottom:14px;display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap;}
+.ctrl-group{display:flex;flex-direction:column;gap:4px;}
+.ctrl-label{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);}
+.ctrl-input{font-family:'JetBrains Mono',monospace;font-size:12px;border:1.5px solid var(--border2);border-radius:6px;padding:6px 10px;width:130px;color:var(--text);outline:none;background:#fff;}
+.ctrl-input:focus{border-color:var(--blue);box-shadow:0 0 0 2px rgba(61,92,255,.12);}
+.ctrl-btn{font-family:'Sora',sans-serif;font-size:11px;font-weight:600;padding:8px 16px;border-radius:6px;border:none;background:var(--blue);color:#fff;cursor:pointer;white-space:nowrap;}
+.ctrl-btn:hover{background:var(--blue-dk);}
+.ctrl-btn.reset{background:var(--surface);color:var(--text2);border:1.5px solid var(--border2);}
+.ctrl-btn.reset:hover{border-color:var(--blue);color:var(--blue);}
+
+/* LIVE RESULT STRIP */
+.live-strip{background:var(--ink);border-radius:8px;padding:14px 18px;margin-bottom:14px;display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+.ls-item{}
+.ls-label{font-size:9.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:4px;}
+.ls-val{font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:500;color:#fff;}
+.ls-sub{font-size:10px;color:rgba(255,255,255,.35);margin-top:2px;}
+.ls-val.green{color:#60D890;}
+.ls-val.red{color:#FF8080;}
+.ls-val.amber{color:#FFB84D;}
+</style>
+</head>
+<body>
+
+<div class="app-header">
+  <div>
+    <div class="ah-title">YMU Health Insurance Budget Model</div>
+    <div class="ah-sub">AvMed GHT (Current 25/26) → FL Blue SimplyBlue (Proposed 26/27)</div>
+  </div>
+  <div class="ah-right">
+    <div class="ah-badge">10 Enrolled Employees</div>
+    <div class="ah-badge">Medical Only</div>
+  </div>
+</div>
+
+<div class="tab-strip">
+  <button class="tab-btn active" onclick="switchTab('peremployee',this)">Per Employee</button>
+  <button class="tab-btn" onclick="switchTab('budget',this)">Budget Model (Yearly)</button>
+  <button class="tab-btn" onclick="switchTab('scenarios',this)">Contribution Scenarios</button>
+</div>
+
+<div class="content">
+
+<!-- ═══ SHEET: PER EMPLOYEE ═══ -->
+<div class="sheet active" id="sheet-peremployee">
+  <div class="sheet-title">Per-Employee Breakdown</div>
+  <div class="sheet-sub">Individual cost by coverage type — current vs. proposed, monthly and annually</div>
+
+  <div class="ss-wrap">
+    <table class="ss">
+      <thead>
+        <tr>
+          <th style="min-width:160px;">Employee Type</th>
+          <th class="center">Plan</th>
+          <th class="right">Full Premium/mo</th>
+          <th class="right">YMU Pays/mo</th>
+          <th class="right">EE Pays/mo</th>
+          <th class="right">EE Semi-mo Deduction</th>
+          <th class="right">EE Annual</th>
+          <th class="right">EE $ Change/mo</th>
+          <th class="right">EE % Change</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="group-head"><td colspan="9">TIER 1 — Essential (Focus S020 → SimplyBlue 21752)</td></tr>
+        <tr>
+          <td class="freeze" rowspan="2">EE Only<br><span class="dim" style="font-weight:400;font-size:10px;">2 employees enrolled</span></td>
+          <td class="center"><span class="pill pill-current">Current</span></td>
+          <td class="right mono">$478.69</td>
+          <td class="right mono">$265.00</td>
+          <td class="right mono">$213.69</td>
+          <td class="right mono">$106.85</td>
+          <td class="right mono">$2,564.28</td>
+          <td class="right mono red" rowspan="2">+$136.09</td>
+          <td class="right mono red" rowspan="2">+63.7%</td>
+        </tr>
+        <tr>
+          <td class="center"><span class="pill pill-proposed">FL Blue</span></td>
+          <td class="right mono">$614.78</td>
+          <td class="right mono">$265.00</td>
+          <td class="right mono red">$349.78</td>
+          <td class="right mono red">$174.89</td>
+          <td class="right mono red">$4,197.36</td>
+        </tr>
+
+        <tr class="group-head"><td colspan="9">TIER 2 — Comprehensive (Focus G020 → SimplyBlue 22751)</td></tr>
+        <tr>
+          <td class="freeze" rowspan="2">EE Only<br><span class="dim" style="font-weight:400;font-size:10px;">4 employees enrolled</span></td>
+          <td class="center"><span class="pill pill-current">Current</span></td>
+          <td class="right mono">$551.39</td>
+          <td class="right mono">$265.00</td>
+          <td class="right mono">$286.39</td>
+          <td class="right mono">$143.20</td>
+          <td class="right mono">$3,436.68</td>
+          <td class="right mono red" rowspan="2">+$108.25</td>
+          <td class="right mono red" rowspan="2">+37.8%</td>
+        </tr>
+        <tr>
+          <td class="center"><span class="pill pill-proposed">FL Blue</span></td>
+          <td class="right mono">$659.63</td>
+          <td class="right mono">$265.00</td>
+          <td class="right mono red">$394.63</td>
+          <td class="right mono red">$197.32</td>
+          <td class="right mono red">$4,735.56</td>
+        </tr>
+        <tr>
+          <td class="freeze" rowspan="2">EE &amp; Spouse<br><span class="dim" style="font-weight:400;font-size:10px;">1 employee enrolled</span></td>
+          <td class="center"><span class="pill pill-current">Current</span></td>
+          <td class="right mono">$1,102.78</td>
+          <td class="right mono">$265.00</td>
+          <td class="right mono">$837.78</td>
+          <td class="right mono">$418.89</td>
+          <td class="right mono">$10,053.36</td>
+          <td class="right mono red" rowspan="2">+$216.50</td>
+          <td class="right mono red" rowspan="2">+25.8%</td>
+        </tr>
+        <tr>
+          <td class="center"><span class="pill pill-proposed">FL Blue</span></td>
+          <td class="right mono">$1,319.27</td>
+          <td class="right mono">$265.00</td>
+          <td class="right mono red">$1,054.27</td>
+          <td class="right mono red">$527.14</td>
+          <td class="right mono red">$12,651.24</td>
+        </tr>
+
+        <tr class="group-head"><td colspan="9">C-SUITE — Employer-Paid (Elect G020 → SimplyBlue 20751)</td></tr>
+        <tr>
+          <td class="freeze" rowspan="2">COO / CPO — EE Only<br><span class="dim" style="font-weight:400;font-size:10px;">2 executives enrolled</span></td>
+          <td class="center"><span class="pill pill-current">Current</span></td>
+          <td class="right mono">$634.10</td>
+          <td class="right mono">$634.10</td>
+          <td class="right mono green">$0.00</td>
+          <td class="right mono green">$0.00</td>
+          <td class="right mono green">$0.00</td>
+          <td class="right mono green" rowspan="2">$0.00</td>
+          <td class="right mono green" rowspan="2">0.0%</td>
+        </tr>
+        <tr>
+          <td class="center"><span class="pill pill-proposed">FL Blue</span></td>
+          <td class="right mono amber">$753.25</td>
+          <td class="right mono amber">$753.25</td>
+          <td class="right mono green">$0.00</td>
+          <td class="right mono green">$0.00</td>
+          <td class="right mono green">$0.00</td>
+        </tr>
+        <tr>
+          <td class="freeze" rowspan="2">CEO — Family<br><span class="dim" style="font-weight:400;font-size:10px;">1 executive enrolled</span></td>
+          <td class="center"><span class="pill pill-current">Current</span></td>
+          <td class="right mono">$1,965.71</td>
+          <td class="right mono">$1,965.71</td>
+          <td class="right mono green">$0.00</td>
+          <td class="right mono green">$0.00</td>
+          <td class="right mono green">$0.00</td>
+          <td class="right mono green" rowspan="2">$0.00</td>
+          <td class="right mono green" rowspan="2">0.0%</td>
+        </tr>
+        <tr>
+          <td class="center"><span class="pill pill-proposed">FL Blue</span></td>
+          <td class="right mono amber">$2,146.77</td>
+          <td class="right mono amber">$2,146.77</td>
+          <td class="right mono green">$0.00</td>
+          <td class="right mono green">$0.00</td>
+          <td class="right mono green">$0.00</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══ SHEET: BUDGET ═══ -->
+<div class="sheet" id="sheet-budget">
+  <div class="sheet-title">Budget Model — 25/26 vs. 26/27</div>
+  <div class="sheet-sub">Budgeted vs. actual YMU spend &middot; Surplus analysis &middot; Medical only &middot; <strong style="color:var(--text2);">Based on 10 employees currently enrolled</strong></div>
+
+  <div class="ss-wrap">
+    <table class="ss ss-budget">
+      <thead>
+        <tr>
+          <th style="min-width:200px;">Line Item</th>
+          <th class="right">25/26 Budgeted</th>
+          <th class="right">25/26 Actual</th>
+          <th class="right yr-sep">25/26 Surplus</th>
+          <th class="right">26/27 Budgeted</th>
+          <th class="right">26/27 Projected</th>
+          <th class="right chg-sep">26/27 Surplus</th>
+          <th class="right">Budget Change $</th>
+          <th class="right">Budget Change %</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="group-head"><td colspan="9">EMPLOYER (YMU) HEALTH INSURANCE SPEND</td></tr>
+        <tr>
+          <td class="freeze">Tier 1 Staff &amp; Mgr contribution</td>
+          <td class="right mono dim">—</td>
+          <td class="right mono">$6,360.00</td>
+          <td class="right mono yr-sep dim">—</td>
+          <td class="right mono dim">—</td>
+          <td class="right mono">$6,360.00</td>
+          <td class="right mono chg-sep dim">—</td>
+          <td class="right mono green">$0.00</td>
+          <td class="right mono green">0.0%</td>
+        </tr>
+        <tr>
+          <td class="freeze">Tier 2 Staff &amp; Mgr contribution</td>
+          <td class="right mono dim">—</td>
+          <td class="right mono">$15,900.00</td>
+          <td class="right mono yr-sep dim">—</td>
+          <td class="right mono dim">—</td>
+          <td class="right mono">$15,900.00</td>
+          <td class="right mono chg-sep dim">—</td>
+          <td class="right mono green">$0.00</td>
+          <td class="right mono green">0.0%</td>
+        </tr>
+        <tr>
+          <td class="freeze">C-Suite full premium (COO/CPO ×2)</td>
+          <td class="right mono dim">—</td>
+          <td class="right mono">$15,218.40</td>
+          <td class="right mono yr-sep dim">—</td>
+          <td class="right mono dim">—</td>
+          <td class="right mono amber">$18,078.00</td>
+          <td class="right mono chg-sep dim">—</td>
+          <td class="right mono amber">+$2,859.60</td>
+          <td class="right mono amber">+18.8%</td>
+        </tr>
+        <tr>
+          <td class="freeze">C-Suite full premium (CEO Family ×1)</td>
+          <td class="right mono dim">—</td>
+          <td class="right mono">$23,588.52</td>
+          <td class="right mono yr-sep dim">—</td>
+          <td class="right mono dim">—</td>
+          <td class="right mono amber">$25,761.24</td>
+          <td class="right mono chg-sep dim">—</td>
+          <td class="right mono amber">+$2,172.72</td>
+          <td class="right mono amber">+9.2%</td>
+        </tr>
+        <tr class="total-row">
+          <td><strong>TOTAL YMU ANNUAL SPEND</strong></td>
+          <td class="right mono">$79,500.00</td>
+          <td class="right mono">$61,066.92</td>
+          <td class="right mono yr-sep green">$18,433.08</td>
+          <td class="right mono">$112,000.00</td>
+          <td class="right mono">$66,099.24</td>
+          <td class="right mono chg-sep green">$45,900.76</td>
+          <td class="right mono amber">+$5,032.32</td>
+          <td class="right mono amber">+8.24%</td>
+        </tr>
+        <tr>
+          <td class="freeze">Budget utilization rate</td>
+          <td class="right mono dim">—</td>
+          <td class="right mono green">76.8% used</td>
+          <td class="right mono yr-sep dim">—</td>
+          <td class="right mono dim">—</td>
+          <td class="right mono green">59.0% used</td>
+          <td class="right mono chg-sep dim">—</td>
+          <td class="right mono dim">—</td>
+          <td class="right mono dim">—</td>
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
+
+  <div class="notice good">
+    <strong>Budget summary:</strong> YMU's 25/26 actual spend of $61,067 came in $18,433 under the $79,500 budget (76.8% used). The proposed 26/27 spend of $66,099 would come in $45,901 under the $112,000 budget (59.0% used) — giving significant headroom for new hires, contribution increases, or mid-year changes.
+  </div>
+</div>
+
+<!-- ═══ SHEET: SCENARIOS ═══ -->
+<div class="sheet" id="sheet-scenarios">
+  <div class="sheet-title">Contribution Scenario Modeler</div>
+  <div class="sheet-sub">Adjust the YMU employer contribution for Staff &amp; Managers to see the live impact on employee cost and budget</div>
+
+  <div class="controls">
+    <div class="ctrl-group">
+      <div class="ctrl-label">YMU Contribution ($/mo per staff)</div>
+      <input class="ctrl-input" type="number" id="contrib-input" value="265" min="0" max="2000" step="5" oninput="updateScenario()">
+    </div>
+    <div class="ctrl-group">
+      <div class="ctrl-label">Total YMU Budget 26/27</div>
+      <input class="ctrl-input" type="number" id="budget-input" value="112000" min="0" step="1000" oninput="updateScenario()">
+    </div>
+    <button class="ctrl-btn reset" onclick="resetScenario()">Reset to Defaults</button>
+    <div style="font-size:10.5px;color:var(--text3);max-width:280px;line-height:1.5;">
+      <strong style="color:var(--text2);">Note:</strong> C-Suite remains 100% employer-paid regardless of this setting. Adjusting this only affects Staff &amp; Manager tiers.
+    </div>
+  </div>
+
+  <div class="live-strip">
+    <div class="ls-item">
+      <div class="ls-label">YMU Annual (Staff + C-Suite)</div>
+      <div class="ls-val" id="ls-ymu-annual">$66,099</div>
+      <div class="ls-sub">Total employer spend</div>
+    </div>
+    <div class="ls-item">
+      <div class="ls-label">vs. Budget</div>
+      <div class="ls-val green" id="ls-vs-budget">$45,901 under</div>
+      <div class="ls-sub" id="ls-budget-pct">59.0% of budget used</div>
+    </div>
+    <div class="ls-item">
+      <div class="ls-label">T1 EE Pays / mo <span style="font-size:9px;opacity:.6;">(per person)</span></div>
+      <div class="ls-val" id="ls-t1-ee">$349.78</div>
+      <div class="ls-sub">Per person, EE Only</div>
+    </div>
+    <div class="ls-item">
+      <div class="ls-label">T2 EE Pays / mo <span style="font-size:9px;opacity:.6;">(per person)</span></div>
+      <div class="ls-val" id="ls-t2-ee">$394.63</div>
+      <div class="ls-sub">Per person, EE Only</div>
+    </div>
+  </div>
+
+  <div class="ss-wrap">
+    <table class="ss" id="scenario-table">
+      <thead>
+        <tr>
+          <th style="min-width:190px;">Line Item</th>
+          <th class="right">YMU Contribution/mo<br><span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:9px;color:#6A7090;">per person (staff &amp; managers)</span></th>
+          <th class="right">YMU Pays/mo<br><span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:9px;color:#6A7090;">all enrolled combined</span></th>
+          <th class="right">YMU Annual</th>
+          <th class="right">EE T1 Pays/mo<br><span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:9px;color:#6A7090;">per person</span></th>
+          <th class="right">EE T2 EE Only/mo<br><span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:9px;color:#6A7090;">per person</span></th>
+          <th class="right">EE T2 EE+Sp/mo<br><span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:9px;color:#6A7090;">per person</span></th>
+          <th class="right">Total Annual vs. Budget</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="group-head"><td colspan="8">CURRENT BASELINE — AvMed GHT (for reference)</td></tr>
+        <tr>
+          <td class="freeze">Staff &amp; Manager tiers (T1+T2) &times;7</td>
+          <td class="right mono">$265.00</td>
+          <td class="right mono">$1,855.00</td>
+          <td class="right mono">$22,260.00</td>
+          <td class="right mono">$213.69</td>
+          <td class="right mono">$286.39</td>
+          <td class="right mono">$837.78</td>
+          <td class="right mono dim">—</td>
+        </tr>
+        <tr>
+          <td class="freeze">C-Suite (100% employer) &times;3</td>
+          <td class="right mono dim">Full premium</td>
+          <td class="right mono">$3,233.91</td>
+          <td class="right mono">$38,806.92</td>
+          <td class="right mono green">$0.00</td>
+          <td class="right mono green">$0.00</td>
+          <td class="right mono green">$0.00</td>
+          <td class="right mono dim">—</td>
+        </tr>
+        <tr class="sub-total">
+          <td>Current Total YMU</td>
+          <td class="right mono dim">—</td>
+          <td class="right mono">$5,088.91</td>
+          <td class="right mono">$61,066.92</td>
+          <td class="right mono dim">—</td>
+          <td class="right mono dim">—</td>
+          <td class="right mono dim">—</td>
+          <td class="right mono green">$18,433 under $79,500</td>
+        </tr>
+
+        <tr class="group-head"><td colspan="8">YOUR SCENARIO — FL Blue SimplyBlue (adjust controls above)</td></tr>
+        <tr>
+          <td class="freeze">Staff &amp; Manager tiers (T1+T2) &times;7</td>
+          <td class="right mono" id="sc-contrib">$265.00</td>
+          <td class="right mono" id="sc-staff-mo">$1,855.00</td>
+          <td class="right mono" id="sc-staff-yr">$22,260.00</td>
+          <td class="right mono" id="sc-t1-mo">$349.78</td>
+          <td class="right mono" id="sc-t2-mo">$394.63</td>
+          <td class="right mono" id="sc-t2sp-mo">$1,054.27</td>
+          <td class="right mono dim">—</td>
+        </tr>
+        <tr>
+          <td class="freeze">C-Suite (100% employer) &times;3</td>
+          <td class="right mono dim">Full premium</td>
+          <td class="right mono">$3,653.27</td>
+          <td class="right mono">$43,839.24</td>
+          <td class="right mono green">$0.00</td>
+          <td class="right mono green">$0.00</td>
+          <td class="right mono green">$0.00</td>
+          <td class="right mono dim">—</td>
+        </tr>
+        <tr class="total-row" id="sc-total-row">
+          <td><strong>Scenario Total YMU</strong></td>
+          <td class="right mono dim">—</td>
+          <td class="right mono" id="sc-total-mo">$5,508.27</td>
+          <td class="right mono" id="sc-total-yr">$66,099.24</td>
+          <td class="right mono dim">—</td>
+          <td class="right mono dim">—</td>
+          <td class="right mono dim">—</td>
+          <td class="right mono green" id="sc-vs-budget">$45,901 under $112,000</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="notice info" id="scenario-notice">
+    <strong>Current scenario:</strong> With a $265/mo contribution, Staff &amp; Manager employees on Tier 1 pay $349.78/mo and Tier 2 employees pay $394.63/mo (EE Only). YMU spends $66,099/yr total — $45,901 under the $112,000 budget.
+  </div>
+</div>
+
+</div><!-- /content -->
+
+<script>
+function switchTab(id, btn){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.sheet').forEach(s=>s.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('sheet-'+id).classList.add('active');
+}
+
+// FL Blue rates
+const T1_TOTAL = 614.78;
+const T2_EE_TOTAL = 659.63;
+const T2_SP_TOTAL = 1319.27;
+const CS_TOTAL = 43839.24; // annual, fixed
+
+function fmt(n){ return '$'+Math.abs(n).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+function fmtK(n){ return '$'+Math.round(Math.abs(n)).toLocaleString('en-US'); }
+
+function updateScenario(){
+  const contrib = parseFloat(document.getElementById('contrib-input').value)||0;
+  const budget  = parseFloat(document.getElementById('budget-input').value)||112000;
+
+  // Staff & manager YMU monthly: T1(×2) + T2EEOnly(×4) + T2Spouse(×1) = 7 employees all get $contrib
+  const staffMo = contrib * 7;
+  const staffYr = staffMo * 12;
+
+  // C-Suite fixed
+  const csMo = 43839.24/12;
+
+  const totalMo = staffMo + csMo;
+  const totalYr = staffYr + CS_TOTAL;
+
+  // EE pays
+  const t1EeMo = Math.max(0, T1_TOTAL - contrib);
+  const t2EeMo = Math.max(0, T2_EE_TOTAL - contrib);
+  const t2SpEeMo = Math.max(0, T2_SP_TOTAL - contrib);
+
+  const surplus = budget - totalYr;
+  const pctUsed = (totalYr/budget*100).toFixed(1);
+
+  // Update live strip
+  document.getElementById('ls-ymu-annual').textContent = fmtK(totalYr);
+  const vsEl = document.getElementById('ls-vs-budget');
+  vsEl.textContent = surplus>=0 ? fmtK(surplus)+' under' : fmtK(surplus)+' OVER';
+  vsEl.className = 'ls-val '+(surplus>=0?'green':'red');
+  document.getElementById('ls-budget-pct').textContent = pctUsed+'% of budget used';
+  document.getElementById('ls-t1-ee').textContent = fmt(t1EeMo)+'/mo';
+  if(document.getElementById('sc-contrib')) document.getElementById('sc-contrib').textContent = fmt(contrib);
+  document.getElementById('ls-t2-ee').textContent = fmt(t2EeMo)+'/mo';
+
+  // Update table
+  document.getElementById('sc-staff-mo').textContent = fmt(staffMo);
+  document.getElementById('sc-staff-yr').textContent = fmt(staffYr);
+  document.getElementById('sc-t1-mo').textContent = fmt(t1EeMo);
+  document.getElementById('sc-t2-mo').textContent = fmt(t2EeMo);
+  document.getElementById('sc-t2sp-mo').textContent = fmt(t2SpEeMo);
+  document.getElementById('sc-total-mo').textContent = fmt(totalMo);
+  document.getElementById('sc-total-yr').textContent = fmt(totalYr);
+
+  const vsBudgetEl = document.getElementById('sc-vs-budget');
+  vsBudgetEl.textContent = surplus>=0 ? fmtK(surplus)+' under '+fmtK(budget) : fmtK(Math.abs(surplus))+' OVER '+fmtK(budget);
+  vsBudgetEl.className = surplus>=0 ? 'right mono green' : 'right mono red';
+
+  // Update notice
+  document.getElementById('scenario-notice').innerHTML =
+    `<strong>Current scenario:</strong> With a ${fmt(contrib)}/mo contribution, Staff &amp; Manager employees on Tier 1 pay ${fmt(t1EeMo)}/mo and Tier 2 employees pay ${fmt(t2EeMo)}/mo (EE Only). YMU spends ${fmt(totalYr)}/yr total — ${surplus>=0?fmtK(surplus)+' under':'<span style="color:var(--red)">'+fmtK(Math.abs(surplus))+' OVER</span>'} the ${fmtK(budget)} budget.`;
+}
+
+function resetScenario(){
+  document.getElementById('contrib-input').value = 265;
+  document.getElementById('budget-input').value = 112000;
+  updateScenario();
+}
+
+// Init
+updateScenario();
+</script>
+</body>
+</html>
