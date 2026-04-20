@@ -20,14 +20,14 @@
   --freeze-bg:#F8F9FE;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5;}
+body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);font-size:12px;line-height:1.4;}
 
 /* STICKY HEADER */
 .app-header{position:sticky;top:0;z-index:200;background:var(--ink);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid rgba(255,255,255,.06);}
 .ah-title{font-size:15px;font-weight:700;color:#fff;letter-spacing:-.02em;}
 .ah-sub{font-size:10.5px;color:rgba(255,255,255,.4);margin-top:2px;}
 .ah-right{display:flex;align-items:center;gap:10px;}
-.ah-badge{font-size:11.5px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;padding:4px 12px;border:1px solid rgba(255,255,255,.15);border-radius:99px;color:rgba(255,255,255,.5);}
+.ah-badge{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:4px 12px;border:1px solid rgba(255,255,255,.15);border-radius:99px;color:rgba(255,255,255,.5);}
 
 /* TABS */
 .tab-strip{position:sticky;top:57px;z-index:199;background:var(--ink);padding:0 20px;display:flex;border-bottom:1px solid rgba(255,255,255,.08);}
@@ -41,12 +41,12 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);font-s
 .sheet.active{display:block;}
 
 /* SHEET TITLE */
-.sheet-title{font-size:16px;font-weight:700;color:var(--text);margin-bottom:4px;letter-spacing:-.01em;}
-.sheet-sub{font-size:13px;color:var(--text3);margin-bottom:16px;}
+.sheet-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px;letter-spacing:-.01em;}
+.sheet-sub{font-size:11px;color:var(--text3);margin-bottom:14px;}
 
 /* SPREADSHEET TABLE */
 .ss-wrap{overflow-x:visible;border-radius:8px;border:1px solid var(--border3);box-shadow:0 1px 8px rgba(0,0,0,.05);margin-bottom:16px;}
-.ss{width:100%;border-collapse:separate;border-spacing:0;font-size:13px;}
+.ss{width:100%;border-collapse:separate;border-spacing:0;font-size:11.5px;}
 
 /* HEADER ROW */
 .ss thead tr th{
@@ -60,7 +60,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);font-s
 /* GROUP HEADER ROW */
 .ss tr.group-head td{
   background:#0D1240 !important;color:rgba(255,255,255,.9) !important;border-top:8px solid var(--bg) !important;
-  font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+  font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
   padding:8px 14px;
 }
 
@@ -72,14 +72,14 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);font-s
 .ss tbody tr:nth-child(even) td{background:var(--row-h);}
 .ss tbody tr.total-row td{
   background:var(--blue-lt);font-weight:700;color:var(--blue-dk);
-  border-top:2px solid var(--blue);font-size:13.5px;
+  border-top:2px solid var(--blue);font-size:12px;
 }
 .ss tbody tr.total-row.green td{background:var(--green-lt);color:var(--green-dk);border-top-color:var(--green);}
-.ss tbody tr.sub-total td{background:#DDE3FF;font-weight:700;color:var(--blue-dk);border-top:2px solid var(--border2);font-size:13.5px;}
+.ss tbody tr.sub-total td{background:#DDE3FF;font-weight:700;color:var(--blue-dk);border-top:2px solid var(--border2);font-size:12px;}
 .ss td.right,.ss th.right{text-align:right;}
 .ss td.center{text-align:center;}
-.ss td.mono{font-family:'JetBrains Mono',monospace;font-size:12.5px;}
-.ss td.right.mono{font-family:'JetBrains Mono',monospace;font-size:12.5px;text-align:right;}
+.ss td.mono{font-family:'JetBrains Mono',monospace;font-size:11px;}
+.ss td.right.mono{font-family:'JetBrains Mono',monospace;font-size:11px;text-align:right;}
 .ss td.green{color:var(--green);font-weight:600;}
 .ss td.red{color:var(--red);font-weight:600;}
 .ss td.amber{color:var(--amber);font-weight:600;}
@@ -103,7 +103,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);font-s
 .change-zero{color:var(--text3);}
 
 /* BADGE */
-.pill{font-size:11px;font-weight:600;padding:2px 8px;border-radius:99px;display:inline-block;}
+.pill{font-size:9.5px;font-weight:600;padding:2px 7px;border-radius:99px;display:inline-block;}
 .pill-current{background:var(--amber-lt);color:var(--amber);}
 .pill-proposed{background:var(--blue-lt);color:var(--blue-dk);}
 .pill-under{background:var(--green-lt);color:var(--green-dk);}
@@ -114,8 +114,19 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);font-s
 .ss-budget th.yr-sep, .ss-budget td.yr-sep{border-right:3px solid #1DB954 !important;}
 .ss-budget th.chg-sep, .ss-budget td.chg-sep{border-right:3px solid var(--border2) !important;}
 .ss-budget tr.group-head td{border-right:none !important;}
+
+/* ENROLLMENT INPUTS */
+.enroll-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;background:var(--surface);border:1px solid var(--border3);border-radius:8px;padding:14px 16px;margin-bottom:12px;}
+.enroll-group{display:flex;flex-direction:column;gap:4px;}
+.enroll-label{font-size:10px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--text3);}
+.enroll-sub{font-size:9.5px;color:var(--text3);margin-top:1px;}
+.enroll-input{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:500;border:1.5px solid var(--border2);border-radius:6px;padding:7px 10px;width:100%;color:var(--text);outline:none;background:#fff;text-align:center;}
+.enroll-input:focus{border-color:var(--blue);box-shadow:0 0 0 2px rgba(61,92,255,.12);}
+.enroll-total{font-size:11px;font-weight:600;color:var(--text2);padding-top:8px;border-top:1px solid var(--border2);margin-top:4px;}
+.enroll-total span{color:var(--blue);font-family:'JetBrains Mono',monospace;}
+.section-divider{font-size:9.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin-bottom:8px;margin-top:4px;}
 /* NOTICE */
-.notice{border-radius:8px;padding:12px 16px;margin-bottom:12px;border:1px solid;font-size:13px;color:var(--text2);line-height:1.5;}
+.notice{border-radius:8px;padding:10px 14px;margin-bottom:12px;border:1px solid;font-size:11px;color:var(--text2);line-height:1.5;}
 .notice.info{background:var(--blue-lt);border-color:rgba(61,92,255,.25);}
 .notice.warn{background:var(--amber-lt);border-color:rgba(154,85,0,.25);}
 .notice.good{background:var(--green-lt);border-color:rgba(10,110,48,.25);}
@@ -124,7 +135,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);font-s
 /* SCENARIO CONTROLS */
 .controls{background:var(--surface);border:1px solid var(--border3);border-radius:8px;padding:14px 16px;margin-bottom:14px;display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap;}
 .ctrl-group{display:flex;flex-direction:column;gap:4px;}
-.ctrl-label{font-size:11.5px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--text3);}
+.ctrl-label{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);}
 .ctrl-input{font-family:'JetBrains Mono',monospace;font-size:12px;border:1.5px solid var(--border2);border-radius:6px;padding:6px 10px;width:130px;color:var(--text);outline:none;background:#fff;}
 .ctrl-input:focus{border-color:var(--blue);box-shadow:0 0 0 2px rgba(61,92,255,.12);}
 .ctrl-btn{font-family:'Sora',sans-serif;font-size:11px;font-weight:600;padding:8px 16px;border-radius:6px;border:none;background:var(--blue);color:#fff;cursor:pointer;white-space:nowrap;}
@@ -403,9 +414,41 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);font-s
       <input class="ctrl-input" type="number" id="budget-input" value="112000" min="0" step="1000" oninput="updateScenario()">
     </div>
     <button class="ctrl-btn reset" onclick="resetScenario()">Reset to Defaults</button>
-    <div style="font-size:10.5px;color:var(--text3);max-width:280px;line-height:1.5;">
-      <strong style="color:var(--text2);">Note:</strong> C-Suite remains 100% employer-paid regardless of this setting. Adjusting this only affects Staff &amp; Manager tiers.
+  </div>
+
+  <div class="section-divider">Enrollment — FL Blue (adjust headcount per tier)</div>
+  <div class="enroll-grid">
+    <div class="enroll-group">
+      <div class="enroll-label">T1 — EE Only</div>
+      <div class="enroll-sub">Essential &middot; 21752</div>
+      <input class="enroll-input" type="number" id="e-t1-ee" value="2" min="0" max="50" oninput="updateScenario()">
     </div>
+    <div class="enroll-group">
+      <div class="enroll-label">T2 — EE Only</div>
+      <div class="enroll-sub">Comprehensive &middot; 22751</div>
+      <input class="enroll-input" type="number" id="e-t2-ee" value="4" min="0" max="50" oninput="updateScenario()">
+    </div>
+    <div class="enroll-group">
+      <div class="enroll-label">T2 — EE &amp; Spouse</div>
+      <div class="enroll-sub">Comprehensive &middot; 22751</div>
+      <input class="enroll-input" type="number" id="e-t2-sp" value="1" min="0" max="50" oninput="updateScenario()">
+    </div>
+    <div class="enroll-group">
+      <div class="enroll-label">C-Suite — EE Only</div>
+      <div class="enroll-sub">COO / CPO &middot; 20751</div>
+      <input class="enroll-input" type="number" id="e-cs-ee" value="2" min="0" max="10" oninput="updateScenario()">
+    </div>
+    <div class="enroll-group">
+      <div class="enroll-label">C-Suite — Family</div>
+      <div class="enroll-sub">CEO &middot; 20751</div>
+      <input class="enroll-input" type="number" id="e-cs-fam" value="1" min="0" max="10" oninput="updateScenario()">
+    </div>
+  </div>
+  <div class="enroll-total" id="enroll-total-bar">Total enrolled: <span id="enroll-total">10</span> employees &nbsp;&middot;&nbsp; Staff &amp; Managers: <span id="enroll-staff">7</span> &nbsp;&middot;&nbsp; C-Suite: <span id="enroll-cs">3</span></div>
+
+  <div style="height:12px;"></div>
+  <div style="font-size:10.5px;color:var(--text3);margin-bottom:12px;line-height:1.5;">
+    <strong style="color:var(--text2);">Note:</strong> C-Suite remains 100% employer-paid regardless of contribution setting. Changing enrollment updates all YMU totals, employee costs, and budget projections in real time.
   </div>
 
   <div class="live-strip">
@@ -480,7 +523,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);font-s
 
         <tr class="group-head"><td colspan="8">YOUR SCENARIO — FL Blue SimplyBlue (adjust controls above)</td></tr>
         <tr>
-          <td class="freeze">Staff &amp; Manager tiers (T1+T2) &times;7</td>
+          <td class="freeze">Staff &amp; Manager tiers (T1+T2) &times;<span id="sc-staff-count">7</span></td>
           <td class="right mono" id="sc-contrib">$265.00</td>
           <td class="right mono" id="sc-staff-mo">$1,855.00</td>
           <td class="right mono" id="sc-staff-yr">$22,260.00</td>
@@ -490,10 +533,10 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);font-s
           <td class="right mono dim">—</td>
         </tr>
         <tr>
-          <td class="freeze">C-Suite (100% employer) &times;3</td>
+          <td class="freeze">C-Suite (100% employer) &times;<span id="sc-cs-count">3</span></td>
           <td class="right mono dim">Full premium</td>
-          <td class="right mono">$3,653.27</td>
-          <td class="right mono">$43,839.24</td>
+          <td class="right mono" id="sc-cs-mo">$3,653.27</td>
+          <td class="right mono" id="sc-cs-yr">$43,839.24</td>
           <td class="right mono green">$0.00</td>
           <td class="right mono green">$0.00</td>
           <td class="right mono green">$0.00</td>
@@ -528,68 +571,105 @@ function switchTab(id, btn){
   document.getElementById('sheet-'+id).classList.add('active');
 }
 
-// FL Blue rates
-const T1_TOTAL = 614.78;
-const T2_EE_TOTAL = 659.63;
-const T2_SP_TOTAL = 1319.27;
-const CS_TOTAL = 43839.24; // annual, fixed
+// FL Blue premium rates
+const RATES = {
+  T1_EE:   614.78,
+  T2_EE:   659.63,
+  T2_SP:  1319.27,
+  CS_EE:   753.25,
+  CS_FAM: 2146.77,
+};
 
 function fmt(n){ return '$'+Math.abs(n).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); }
 function fmtK(n){ return '$'+Math.round(Math.abs(n)).toLocaleString('en-US'); }
+function getInt(id, def){ return parseInt(document.getElementById(id).value)||def||0; }
+function getFloat(id, def){ return parseFloat(document.getElementById(id).value)||def||0; }
 
 function updateScenario(){
-  const contrib = parseFloat(document.getElementById('contrib-input').value)||0;
-  const budget  = parseFloat(document.getElementById('budget-input').value)||112000;
+  const contrib = getFloat('contrib-input', 265);
+  const budget  = getFloat('budget-input', 112000);
 
-  // Staff & manager YMU monthly: T1(×2) + T2EEOnly(×4) + T2Spouse(×1) = 7 employees all get $contrib
-  const staffMo = contrib * 7;
-  const staffYr = staffMo * 12;
+  // Enrollment counts
+  const nT1ee  = getInt('e-t1-ee', 2);
+  const nT2ee  = getInt('e-t2-ee', 4);
+  const nT2sp  = getInt('e-t2-sp', 1);
+  const nCsEe  = getInt('e-cs-ee', 2);
+  const nCsFam = getInt('e-cs-fam', 1);
 
-  // C-Suite fixed
-  const csMo = 43839.24/12;
+  const totalStaff = nT1ee + nT2ee + nT2sp;
+  const totalCs    = nCsEe + nCsFam;
+  const totalAll   = totalStaff + totalCs;
 
-  const totalMo = staffMo + csMo;
-  const totalYr = staffYr + CS_TOTAL;
+  // YMU monthly — staff get flat contrib, C-Suite get full premium
+  const staffYmuMo = contrib * totalStaff;
+  const csYmuMo    = (RATES.CS_EE * nCsEe) + (RATES.CS_FAM * nCsFam);
+  const totalYmuMo = staffYmuMo + csYmuMo;
+  const staffYmuYr = staffYmuMo * 12;
+  const csYmuYr    = csYmuMo * 12;
+  const totalYmuYr = totalYmuMo * 12;
 
-  // EE pays
-  const t1EeMo = Math.max(0, T1_TOTAL - contrib);
-  const t2EeMo = Math.max(0, T2_EE_TOTAL - contrib);
-  const t2SpEeMo = Math.max(0, T2_SP_TOTAL - contrib);
+  // EE per-person pays
+  const t1EeMo  = Math.max(0, RATES.T1_EE  - contrib);
+  const t2EeMo  = Math.max(0, RATES.T2_EE  - contrib);
+  const t2SpEeMo = Math.max(0, RATES.T2_SP - contrib);
 
-  const surplus = budget - totalYr;
-  const pctUsed = (totalYr/budget*100).toFixed(1);
+  const surplus = budget - totalYmuYr;
+  const pctUsed = budget > 0 ? (totalYmuYr / budget * 100).toFixed(1) : '0.0';
 
-  // Update live strip
-  document.getElementById('ls-ymu-annual').textContent = fmtK(totalYr);
+  // Enrollment summary bar
+  document.getElementById('enroll-total').textContent = totalAll;
+  document.getElementById('enroll-staff').textContent = totalStaff;
+  document.getElementById('enroll-cs').textContent = totalCs;
+
+  // Staff/CS count labels in table
+  document.getElementById('sc-staff-count').textContent = totalStaff;
+  document.getElementById('sc-cs-count').textContent = totalCs;
+
+  // Live strip
+  document.getElementById('ls-ymu-annual').textContent = fmtK(totalYmuYr);
   const vsEl = document.getElementById('ls-vs-budget');
-  vsEl.textContent = surplus>=0 ? fmtK(surplus)+' under' : fmtK(surplus)+' OVER';
-  vsEl.className = 'ls-val '+(surplus>=0?'green':'red');
+  vsEl.textContent = surplus >= 0 ? fmtK(surplus)+' under' : fmtK(Math.abs(surplus))+' OVER';
+  vsEl.className = 'ls-val '+(surplus >= 0 ? 'green' : 'red');
   document.getElementById('ls-budget-pct').textContent = pctUsed+'% of budget used';
   document.getElementById('ls-t1-ee').textContent = fmt(t1EeMo)+'/mo';
-  if(document.getElementById('sc-contrib')) document.getElementById('sc-contrib').textContent = fmt(contrib);
   document.getElementById('ls-t2-ee').textContent = fmt(t2EeMo)+'/mo';
 
-  // Update table
-  document.getElementById('sc-staff-mo').textContent = fmt(staffMo);
-  document.getElementById('sc-staff-yr').textContent = fmt(staffYr);
-  document.getElementById('sc-t1-mo').textContent = fmt(t1EeMo);
-  document.getElementById('sc-t2-mo').textContent = fmt(t2EeMo);
-  document.getElementById('sc-t2sp-mo').textContent = fmt(t2SpEeMo);
-  document.getElementById('sc-total-mo').textContent = fmt(totalMo);
-  document.getElementById('sc-total-yr').textContent = fmt(totalYr);
+  // Table cells
+  document.getElementById('sc-contrib').textContent  = fmt(contrib);
+  document.getElementById('sc-staff-mo').textContent = fmt(staffYmuMo);
+  document.getElementById('sc-staff-yr').textContent = fmt(staffYmuYr);
+  document.getElementById('sc-cs-mo').textContent    = fmt(csYmuMo);
+  document.getElementById('sc-cs-yr').textContent    = fmt(csYmuYr);
+  document.getElementById('sc-t1-mo').textContent    = fmt(t1EeMo);
+  document.getElementById('sc-t2-mo').textContent    = fmt(t2EeMo);
+  document.getElementById('sc-t2sp-mo').textContent  = fmt(t2SpEeMo);
+  document.getElementById('sc-total-mo').textContent = fmt(totalYmuMo);
+  document.getElementById('sc-total-yr').textContent = fmt(totalYmuYr);
 
   const vsBudgetEl = document.getElementById('sc-vs-budget');
-  vsBudgetEl.textContent = surplus>=0 ? fmtK(surplus)+' under '+fmtK(budget) : fmtK(Math.abs(surplus))+' OVER '+fmtK(budget);
-  vsBudgetEl.className = surplus>=0 ? 'right mono green' : 'right mono red';
+  vsBudgetEl.textContent = surplus >= 0
+    ? fmtK(surplus)+' under '+fmtK(budget)
+    : fmtK(Math.abs(surplus))+' OVER '+fmtK(budget);
+  vsBudgetEl.className = surplus >= 0 ? 'right mono green' : 'right mono red';
 
-  // Update notice
+  // Notice
   document.getElementById('scenario-notice').innerHTML =
-    `<strong>Current scenario:</strong> With a ${fmt(contrib)}/mo contribution, Staff &amp; Manager employees on Tier 1 pay ${fmt(t1EeMo)}/mo and Tier 2 employees pay ${fmt(t2EeMo)}/mo (EE Only). YMU spends ${fmt(totalYr)}/yr total — ${surplus>=0?fmtK(surplus)+' under':'<span style="color:var(--red)">'+fmtK(Math.abs(surplus))+' OVER</span>'} the ${fmtK(budget)} budget.`;
+    '<strong>Current scenario:</strong> '+totalAll+' employees enrolled ('+totalStaff+' staff/managers, '+totalCs+' C-Suite). '+
+    'With a '+fmt(contrib)+'/mo contribution, T1 employees pay '+fmt(t1EeMo)+'/mo and T2 employees pay '+fmt(t2EeMo)+'/mo each. '+
+    'YMU total: '+fmt(totalYmuYr)+'/yr — '+
+    (surplus>=0
+      ? fmtK(surplus)+' under the '+fmtK(budget)+' budget.'
+      : '<span style="color:var(--red);font-weight:600;">'+fmtK(Math.abs(surplus))+' OVER the '+fmtK(budget)+' budget.</span>');
 }
 
 function resetScenario(){
   document.getElementById('contrib-input').value = 265;
-  document.getElementById('budget-input').value = 112000;
+  document.getElementById('budget-input').value  = 112000;
+  document.getElementById('e-t1-ee').value  = 2;
+  document.getElementById('e-t2-ee').value  = 4;
+  document.getElementById('e-t2-sp').value  = 1;
+  document.getElementById('e-cs-ee').value  = 2;
+  document.getElementById('e-cs-fam').value = 1;
   updateScenario();
 }
 
